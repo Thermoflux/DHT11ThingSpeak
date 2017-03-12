@@ -12,27 +12,26 @@ Based on project by Mahesh Venkitachalam at electronut.in
 
 # Import all the libraries we need to run
 import sys
-import RPi.GPIO as GPIO
 import os
-from time import sleep
+import time
 import Adafruit_DHT
 import urllib2
 
 
 
+
 DEBUG = 1
 # Setup the pins we are connect to
-RCpin = 24
 DHTpin = 4
 
 #Setup our API and delay
 myAPI = "UUQ0WS05R5PB9VV6"
 myDelay = 15 #how many seconds between posting data
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(RCpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-
+# File name for data logging
+fname = 'TemHumLog_'+time.strftime("%d%m%Y_%H%M%S", time.gmtime()) + '.csv'
+# File name for error recovery
+fErrRec = 'TempHumErrorStatus.log'
 
 def getSensorData():
     RHW, TW = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, DHTpin)
@@ -43,13 +42,6 @@ def getSensorData():
     # return dict
     return (str(RHW), str(TW),str(TWF))
 
-def RCtime(RCpin):
-    LT = 0
-    
-    if (GPIO.input(RCpin) == True):
-        LT += 1
-    return (str(LT))
-    
 # main() function
 def main():
     
@@ -60,18 +52,26 @@ def main():
     
     while True:
         try:
+            mTime = time.strftime("%d/%m/%Y %H:%M:%S", time.gmtime())
             RHW, TW, TWF = getSensorData()
-            LT = "1"  #RCtime(RCpin)
+            
             f = urllib2.urlopen(baseURL + 
                                 "&field1=%s&field2=%s&field3=%s" % (TW, TWF, RHW)+
-                                "&field4=%s" % (LT))
-            print f.read()
-            print TW + " " + TWF+ " " + RHW + " " + LT
-            f.close()
-            
+                                "&field4=%s" % ("1"))
 
-            sleep(int(myDelay))
+            print f.read()
+            print TW + " " + TWF+ " " + RHW + " " + "1"
+            f.close()
+
+            mData = "%s,%s,%s,%s\n" %(mTime,TW,TWF,RHW)
+            logfile = open(fname,'a',0)
+            logfile.write(mData)
+            logfile.close()
+            time.sleep(int(myDelay))
         except:
+            logfile = open(fErrRec,'w',0)
+            logfile.write("0")
+            logfile.close()
             print 'exiting.'
             break
 
