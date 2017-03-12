@@ -24,7 +24,7 @@ import urllib2
 
 
 
-DEBUG = 1
+DEBUG = 0
 # Setup the pins we are connect to
 DHTpin = 4
 
@@ -33,7 +33,7 @@ myAPI = "UUQ0WS05R5PB9VV6"
 myDelay = 45 #how many seconds between posting data
 
 # File name for data logging
-fname = 'TemHumLog_'+time.strftime("%d%m%Y_%H%M%S", time.gmtime()) + '.csv'
+fname = 'TemHumLog_'+time.strftime("%d%m%Y", time.gmtime()) + '.csv'
 # File name for error recovery
 fErrRec = 'TempHumErrorStatus.log'
 
@@ -74,10 +74,16 @@ def main():
             logfile.write(mData)
             logfile.close()
             time.sleep(int(myDelay))
-        except:
-            # Log error to file
+
+	    # Log error status to file
             logfile = open(fErrRec,'w',0)
-            logfile.write("0")
+            logfile.write("1\n")
+            logfile.close()
+
+        except:
+            # Log error status to file
+            logfile = open(fErrRec,'w',0)
+            logfile.write("0\n")
             logfile.close()
             print 'exiting.'
             break
