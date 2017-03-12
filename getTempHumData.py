@@ -1,6 +1,9 @@
 """
-My First Internet of Things
+Humidity and Temperature data logging script.
+For ANLY 510 class
+Anurag Kotha
 
+Based on below sketch.
 Temperature/Humidity Light monitor using Raspberry Pi, DHT11, and photosensor 
 Data is displayed at thingspeak.com
 2015/06/15
@@ -9,6 +12,7 @@ SolderingSunday.com
 Based on project by Mahesh Venkitachalam at electronut.in
 
 """
+
 
 # Import all the libraries we need to run
 import sys
@@ -26,7 +30,7 @@ DHTpin = 4
 
 #Setup our API and delay
 myAPI = "UUQ0WS05R5PB9VV6"
-myDelay = 15 #how many seconds between posting data
+myDelay = 45 #how many seconds between posting data
 
 # File name for data logging
 fname = 'TemHumLog_'+time.strftime("%d%m%Y_%H%M%S", time.gmtime()) + '.csv'
@@ -45,7 +49,7 @@ def getSensorData():
 # main() function
 def main():
     
-    print 'starting...'
+    print 'starting... '
 
     baseURL = 'https://api.thingspeak.com/update?api_key=%s' % myAPI
     print baseURL
@@ -54,7 +58,8 @@ def main():
         try:
             mTime = time.strftime("%d/%m/%Y %H:%M:%S", time.gmtime())
             RHW, TW, TWF = getSensorData()
-            
+
+            # Send data to ThingSpeak takes some time to open the connection
             f = urllib2.urlopen(baseURL + 
                                 "&field1=%s&field2=%s&field3=%s" % (TW, TWF, RHW)+
                                 "&field4=%s" % ("1"))
@@ -63,12 +68,14 @@ def main():
             print TW + " " + TWF+ " " + RHW + " " + "1"
             f.close()
 
+            # Log data to file
             mData = "%s,%s,%s,%s\n" %(mTime,TW,TWF,RHW)
             logfile = open(fname,'a',0)
             logfile.write(mData)
             logfile.close()
             time.sleep(int(myDelay))
         except:
+            # Log error to file
             logfile = open(fErrRec,'w',0)
             logfile.write("0")
             logfile.close()
