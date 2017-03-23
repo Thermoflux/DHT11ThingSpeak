@@ -58,47 +58,47 @@ def main():
         
 		try:
 			
-			# Log data to file
-            mData = "%s,%s,%s,%s\n" %(mTime,TW,TWF,RHW)
-            logfile = open(fname,'a',0)
-            logfile.write(mData)
-            logfile.close()
+	   		 # Log data to file
+            		mData = "%s,%s,%s,%s\n" %(mTime,TW,TWF,RHW)
+            		logfile = open(fname,'a',0)
+            		logfile.write(mData)
+            		logfile.close()
             
-	    	# Log error status to file
-            logfile = open(fErrRec,'w',0)
-            logfile.write("1\n")
-            logfile.close()
+	    	      # Log error status to file
+            		logfile = open(fErrRec,'w',0)
+            		logfile.write("1\n")
+            		logfile.close()
 			try: 
 				
-            	mTime = time.strftime("%d/%m/%Y %H:%M:%S", time.gmtime())
-            	RHW, TW, TWF = getSensorData()
+            			mTime = time.strftime("%d/%m/%Y %H:%M:%S", time.gmtime())
+            			RHW, TW, TWF = getSensorData()
 
-            	# Send data to ThingSpeak takes some time to open the connection
-            	f = urllib2.urlopen(baseURL + 
-                                "&field1=%s&field2=%s&field3=%s" % (TW, TWF, RHW)+
-                                "&field4=%s" % ("1"))
+            			# Send data to ThingSpeak takes some time to open the connection
+            			f = urllib2.urlopen(baseURL + 
+                                	"&field1=%s&field2=%s&field3=%s" % (TW, TWF, RHW)+
+                                	"&field4=%s" % ("1"))
 
-            	print f.read()
-            	print TW + " " + TWF+ " " + RHW + " " + "1"
-            	f.close()
+            			print f.read()
+            			print TW + " " + TWF+ " " + RHW + " " + "1"
+            			f.close()
 			except:
 				
 				# Log error status to file
-	            logfile = open(fErrRec,'w',0)
-    	        logfile.write("0")
-        	    logfile.close()
-            	print 'Failed to connect to the server.'
+			        logfile = open(fErrRec,'w',0)
+    	        		logfile.write("0")
+        			logfile.close()
+            			print 'Failed to connect to the server.'
 
             
-			time.sleep(int(myDelay))
+		      time.sleep(int(myDelay))
 
-        except:
-            # Log error status to file
-            logfile = open(fErrRec,'w',0)
-            logfile.write("0\n")
-            logfile.close()
-            print 'Exception caught'
-            # break  		  Dont want to exit everytime we loose network connection.
+        	except:
+            		# Log error status to file
+            		logfile = open(fErrRec,'w',0)
+            		logfile.write("0\n")
+            		logfile.close()
+            		print 'Exception caught'
+            		# break  		  Dont want to exit everytime we loose network connection.
 
 # call main
 if __name__ == '__main__':
