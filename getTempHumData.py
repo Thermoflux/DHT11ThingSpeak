@@ -25,11 +25,11 @@ import urllib2
 
 pwd = "/home/pi/TempHum/"
 DEBUG = 0
-# Setup the pins we are connect to
+# Setup the pins we are connected to
 DHTpin = 4
 
 #Setup our API and delay
-myAPI = "UUQ0WS05R5PB9VV6"
+myAPI = "TEMP Value" # *** SET YOUR API KEY HERE. WONT WORK OTHERWISE
 myDelay = 45 #how many seconds between posting data
 
 # File name for data logging
@@ -65,14 +65,14 @@ def main():
 	            	logfile.close()
           
 	    		# Log error status to file
-            		logfile = open(fErrRec,'w',0)
+            		logfile = open(fErrRec,'a',0)
             		logfile.write("1\n")
             		logfile.close()
 			time.sleep(int(myDelay))
 
         	except:
             		# Log error status to file
-            		logfile = open(fErrRec,'w',0)
+            		logfile = open(fErrRec,'a',0)
             		logfile.write("0\n")
             		logfile.close()
             		print 'Exception caught'
@@ -87,7 +87,7 @@ def main():
 		except:
 			
 			# Log error status to file
-            		logfile = open(fErrRec,'w',0)
+            		logfile = open(fErrRec,'a',0)
         		logfile.write("0")
        	    		logfile.close()
        			print 'Failed to connect to the server.'
